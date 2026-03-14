@@ -13,30 +13,16 @@ There are three microservices: \
 (4) `order-service` process incoming stream of orders from `payment-service` and `stock-service`, join them by `Order` id and sends Order with a new status -> `status == CONFIRMATION` or `status == ROLLBACK` or `status == REJECTED` \
 (5) `payment-service` and `stock-service` receive `Order` with a final status and "commit" or "rollback" a local transaction make before
 
-Client
-│
-▼
-Order Service
-│
-▼
-orders topic (NEW)
-│
-├────────► Payment Service
-│           │
-│           ▼
-│       payment-orders
-│
-└────────► Stock Service
-│
-▼
-stock-orders
+![img_1.png](img_1.png)
 
-Kafka Streams Join
-(payment + stock)
-
-│
-▼
-orders topic (CONFIRMED / ROLLBACK)
-│
-▼
-Payment + Stock finalize
+## Running on Docker locally
+1. First build the whole project and images with the following command:
+   $ mvn clean package -DskipTests -Pbuild-image
+2. Using Docker Compose, containerize all four services (Kafka, order-service, payment-service, stock-service)
+   Set SPRING_PROFILES_ACTIVE: docker
+   Go to project root and execute:
+   $ docker compose up -d
+3. Using Docker Compose, containerize all remaining three services and execute one service locally for debugging.
+   Set SPRING_PROFILES_ACTIVE: docker
+   Go to order-service/payment-service/stock-service and execute:
+   $ docker compose up -d
