@@ -108,7 +108,7 @@
                         <version>3.5.1</version>
                         <configuration>
                             <to>
-                                <image>sample-spring-kafka-microservices/${project.artifactId}:${project.version}</image>
+                                <image>spring-kafka-saga-demo/${project.artifactId}:${project.version}</image>
                             </to>
                         </configuration>
                         <executions>
