@@ -42,3 +42,76 @@ The system consists of **three microservices**.
 (5) `payment-service` and `stock-service` receive `Order` with a final status and "commit" or "rollback" a local transaction make before  \
 
 ![img_1.png](img_1.png)
+
+## Running the Project with Docker
+
+There are **two ways to run the project**.
+
+---
+
+## Option 1 — Run Entire System in Docker
+
+This runs **Kafka and all microservices inside containers**.
+
+### Step 1 — Build Docker Images
+
+From the project root: **mvn clean package -DskipTests -Pbuild-image**
+
+This builds Docker images for: order-service, payment-service, stock-service
+
+###  Step 2 — Start All Services
+
+From the project root: **docker compose up -d**
+
+This starts: Kafka broker, order-service, payment-service, stock-service
+
+###  Step 3 — Verify Containers
+
+**docker ps**
+
+Expected containers: broker, order-service, payment-service, stock-service
+
+### Step 4 — Test the System
+
+Create a new order:
+
+**curl -X POST http://localhost:8080/orders \
+-H "Content-Type: application/json" \
+-d '{"customerId":1,"productId":1,"productCount":2,"price":200,"status":"NEW"}'**
+
+Create 10000 orders:
+
+**curl -X POST http://localhost:8080/orders/generate**
+
+Retrieve all orders:
+
+**GET http://localhost:8080/orders**
+
+Expected result:
+
+**status = CONFIRMED**
+
+## Option 2 — Hybrid Mode (Run One Service Locally)
+
+This mode is useful when debugging a specific service. Example: debugging order-service.
+
+### Step 1 — Start Dependencies
+
+Navigate to the service directory: order-service
+
+Run: **docker compose up -d**
+
+This starts: Kafka, payment-service, stock-service
+
+### Step 2 — Run the Service Locally
+
+Start the service from your IDE or terminal: **mvn spring-boot:run**
+
+Now the architecture becomes:
+
+Kafka (Docker)
+payment-service (Docker)
+stock-service (Docker)
+order-service (Local JVM)
+
+This allows you to debug with breakpoints.
