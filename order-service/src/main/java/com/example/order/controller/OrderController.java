@@ -1,5 +1,6 @@
 package com.example.order.controller;
 
+import com.example.order.metrics.SagaMetrics;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -29,18 +30,22 @@ public class OrderController {
     private KafkaTemplate<Long, Order> template;
     private StreamsBuilderFactoryBean kafkaStreamsFactory;
     private OrderGeneratorService orderGeneratorService;
+    private final SagaMetrics sagaMetrics;
 
     public OrderController(KafkaTemplate<Long, Order> template,
                            StreamsBuilderFactoryBean kafkaStreamsFactory,
-                           OrderGeneratorService orderGeneratorService) {
+                           OrderGeneratorService orderGeneratorService,
+                           SagaMetrics sagaMetrics) {
         this.template = template;
         this.kafkaStreamsFactory = kafkaStreamsFactory;
         this.orderGeneratorService = orderGeneratorService;
+        this.sagaMetrics = sagaMetrics;
     }
 
     @PostMapping
     public Order create(@RequestBody Order order) {
         order.setId(id.incrementAndGet());
+        sagaMetrics.orderCreated();
         template.send("orders", order.getId(), order);
         LOG.info("Sent: {}", order);
         return order;
