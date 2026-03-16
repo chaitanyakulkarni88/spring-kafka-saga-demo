@@ -14,3 +14,18 @@ spring.kafka:
 spring.output.ansi.enabled: ALWAYS
 
 logging.pattern.console: "%clr(%d{HH:mm:ss.SSS}){blue} %clr(---){faint} %clr([%15.15t]){yellow} %clr(:){red} %clr(%m){faint}%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+  endpoint:
+    prometheus:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
