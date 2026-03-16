@@ -115,3 +115,14 @@ stock-service (Docker)
 order-service (Local JVM)
 
 This allows you to debug with breakpoints.
+
+## Observability
+
+### Grafana dashboard
+![img_3.png](img_3.png)
+![img_2.png](img_2.png)
+
+### Prometheus metrics
+![img_4.png](img_4.png)
+![img_5.png](img_5.png)
+![img_6.png](img_6.png)
