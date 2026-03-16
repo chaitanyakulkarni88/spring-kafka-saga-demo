@@ -117,12 +117,57 @@ order-service (Local JVM)
 This allows you to debug with breakpoints.
 
 ## Observability
+This project integrates Prometheus + Grafana to monitor the Saga workflow and system performance.
+
+Prometheus collects application metrics exposed by Spring Boot Actuator, while Grafana visualizes them through dashboards.
 
 ### Grafana dashboard
+**Saga Success Rate**
+
+Shows the percentage of orders successfully completed through the entire saga workflow.
+
+**orders_confirmed_total / orders_total * 100**
+
+**Saga Failure Rate**
+
+Represents the percentage of orders that failed due to payment or stock validation failures.
+
+**(orders_rejected_total + orders_rollback_total) / orders_total * 100**
+
 ![img_3.png](img_3.png)
+
+**Saga Processing Timer**
+
+Measures the time taken for saga workflows to complete using the custom metric:
+
+**saga_processing_duration_seconds**
+
+This helps identify slow processing or performance bottlenecks in distributed services.
+
+**Orders In Flight**
+
+Displays the number of orders currently being processed in the saga pipeline.
+
+**orders_total -
+(orders_confirmed_total + orders_rejected_total + orders_rollback_total)**
+
+A high value may indicate delays in downstream services.
+
 ![img_2.png](img_2.png)
 
 ### Prometheus metrics
+**System metrics**
+
+**http_server_requests_seconds_sum**    -   Total HTTP request processing time
+**jvm_memory_used_bytes**   -   JVM memory usage
+**jvm_threads_live_threads**    -	Number of active JVM threads
 ![img_4.png](img_4.png)
 ![img_5.png](img_5.png)
+**Custom Saga metrics**
+
+**orders_total**    Total orders generated
+**orders_confirmed_total**  Orders successfully processed
+**orders_rejected_total**   Orders rejected due to business rules
+**orders_rollback_total**   Orders rolled back due to failures
+
 ![img_6.png](img_6.png)
